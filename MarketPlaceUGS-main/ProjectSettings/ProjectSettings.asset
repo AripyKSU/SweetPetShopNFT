@@ -949,11 +949,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 733a611e-93a2-4be3-aa68-9dd3325fa879
+  cloudProjectId: 220ad926-8415-4f2c-864b-877d256a005a
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: marketPlaceSepolia
-  organizationId: rhavkd33
+  projectName: NFTPractice
+  organizationId: kimsu00215
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

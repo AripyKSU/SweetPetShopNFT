@@ -22882,10 +22882,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b6ee0c943b4d1dba018f49a3d00462, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleMarket.ReownWalletBridge
-  projectId: d63d5af0be902bf4bcabe0965a093dd2
+  projectId: bde85ec265e1509f68f76f860257df65
   gameUrl: https://github.com/ikhong0303/MarketPlaceUGS
   iconUrl: https://www.mbccomputer.co.kr/up/campus/normal-logo/2024/04/20240418121349273555.png
-  mythicNftContract: 0xd80054858B4116A15977B9DA5e27C507d1381A6e
+  mythicNftContract: 0x1a8C5D0E600E87E7FC0baF01F567FAbb0DB8929D
 --- !u!114 &2007362162
 MonoBehaviour:
   m_ObjectHideFlags: 0
