@@ -14,22 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemVisualData
   items:
   - id: SWORD
-    itemName: "\uAC80"
+    itemName: "\uD3EC\uBA54\uB77C\uB2C8\uC548"
     price: 120
-    icon: {fileID: 21300000, guid: e72eeb1953bcae240a9f03e10f207f7e, type: 3}
+    icon: {fileID: 21300000, guid: 755125083067f384d86bc61ae840c1d2, type: 3}
   - id: REDPOTION
-    itemName: "\uBE68\uAC04\uD3EC\uC158"
+    itemName: "\uCF54\uB9AC\uC548 \uC1FC\uD2B8\uD5E4\uC5B4"
     price: 100
-    icon: {fileID: 21300000, guid: 22c23bd41da7ecc4aa4600cf66dcc81c, type: 3}
+    icon: {fileID: 21300000, guid: 616d0c68d588cf04c89a589ca449f645, type: 3}
   - id: BLUEPOTION
-    itemName: "\uD30C\uB780\uD3EC\uC158"
+    itemName: "\uB86D\uC774\uC5B4 \uD1A0\uB07C"
     price: 130
-    icon: {fileID: 21300000, guid: 2e7d1f34ab31fc54aa5c0f69b6545398, type: 3}
+    icon: {fileID: 21300000, guid: c481628a59ce47e439ee46a3921299a5, type: 3}
   - id: LEGENDARY_SWORD
-    itemName: "\uC804\uC124\uAC80"
+    itemName: "\uD2B9\uBCC4 \uD3AB \uACE8\uB4E0 \uB9AC\uD2B8\uB9AC\uBC84"
     price: 1000
-    icon: {fileID: 21300000, guid: 164aa46380aca224bbef827fb2ccda82, type: 3}
+    icon: {fileID: 21300000, guid: bbbb19111703b064197b289ec696db8a, type: 3}
   - id: MYTHIC_SWORD_NFT
-    itemName: "\uC2E0\uD654\uAC80NFT"
+    itemName: "NFT \uD76C\uADC0 \uD3AB \uC0AC\uB9C9\uC5EC\uC6B0"
     price: 0
-    icon: {fileID: 21300000, guid: e3c3328a97151ec44a814d18d6121305, type: 3}
+    icon: {fileID: 21300000, guid: 017d773301008b94395003061c13c3c0, type: 3}

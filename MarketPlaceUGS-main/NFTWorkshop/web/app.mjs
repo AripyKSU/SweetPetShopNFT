@@ -3,7 +3,34 @@ const artifact=await (await fetch('/contract.json')).json();
 const $=id=>document.getElementById(id);
 let provider, signer, busy=false;
 const log=t=>{$('status').textContent=t;};
-const address=v=>{if(!isAddress(v)||v===ZeroAddress)throw Error('0x 공개 주소를 확인하세요.');return v;};
+const address=(v,label='공개 주소')=>{
+ if(/^0x[0-9a-fA-F]{64}$/.test(v))throw Error(label+' 칸에 64자리 거래 해시를 입력했습니다. 계약 주소는 0x로 시작하는 40자리 주소입니다.');
+ if(!isAddress(v)||v===ZeroAddress)throw Error(label+'를 확인하세요. 0x로 시작하는 40자리 주소가 필요합니다.');
+ return v;
+};
+const publicUri=v=>{
+ const uri=v.trim();
+ if(/^ipfs:\/\/[a-zA-Z0-9]+(?:\/[^\s]*)?$/.test(uri)||/^https:\/\/[^\s]+$/.test(uri))return uri;
+ throw Error('공개 ipfs:// 또는 https:// 주소를 입력하세요. 로컬 주소와 data: URI는 사용할 수 없습니다.');
+};
+const gateway=uri=>uri.startsWith('ipfs://')?'https://gateway.pinata.cloud/ipfs/'+uri.slice(7):uri;
+const inlineMetadata=image=>{
+ const data={name:'Starlight Fennec Pet NFT',description:'A starlight fennec pet on Sepolia.',image:gateway(image),attributes:[{trait_type:'Pet',value:'Fennec Fox'},{trait_type:'Rarity',value:'Mythic'}]};
+ return 'data:application/json;base64,'+btoa(JSON.stringify(data));
+};
+async function metadata(uri) {
+ let data;
+ if(uri.startsWith('data:application/json;base64,'))data=JSON.parse(atob(uri.slice('data:application/json;base64,'.length)));
+ else {
+  const response=await fetch(gateway(publicUri(uri)),{cache:'no-store'});
+  if(!response.ok)throw Error('메타데이터를 읽을 수 없습니다: HTTP '+response.status);
+  data=await response.json();
+ }
+ if(!data||!data.name||!data.image)throw Error('메타데이터에 name 또는 image가 없습니다.');
+ publicUri(data.image);
+ await new Promise((resolve,reject)=>{const image=new Image();image.onload=resolve;image.onerror=()=>reject(Error('메타데이터 image를 표시할 수 없습니다.'));image.src=gateway(data.image);});
+ return data;
+}
 function parse(text) {
  const parts=text.trim().split('|');
  if(parts.length!==5||parts[0]!=='MSW1'||parts[1]!=='11155111'||!/^0x[0-9a-fA-F]{64}$/.test(parts[4]))throw Error('쿠폰 전체를 다시 붙여넣으세요.');
@@ -23,12 +50,12 @@ async function session() {
  return signer;
 }
 async function collection(admin=false) {
- await session();const a=address($('contract').value.trim());
+ await session();const a=address($('contract').value.trim(),'NFT 계약 주소');
  if(await provider.getCode(a)==='0x')throw Error('이 주소에 계약이 없습니다.');
  const c=new Contract(a,artifact.abi,signer);
- if(await c.symbol()!=='MSWORD')throw Error('신화검 계약 주소를 확인하세요.');
+ if(await c.symbol()!=='FENNEC')throw Error('페넥여우 계약 주소를 확인하세요.');
  if(admin&&(await c.owner()).toLowerCase()!==(await signer.getAddress()).toLowerCase())throw Error('배포한 관리자 계정으로 전환하세요.');
- localStorage.setItem('mythic-contract',a);return c;
+ localStorage.setItem('fennec-contract',a);return c;
 }
 async function wait(tx) {
  localStorage.setItem('mythic-last-tx',tx.hash);
@@ -42,23 +69,46 @@ function bind(id,fn) {$(id).onclick=async()=>{
  try{await fn();}catch(e){log('확인 필요: '+(e.reason||e.shortMessage||e.message)+'\n마지막 거래: '+(localStorage.getItem('mythic-last-tx')||'없음')+'\n전송 후 오류라면 재전송 전에 쿠폰 상태 조회를 누르세요.');}
  finally{busy=false;document.querySelectorAll('button').forEach(x=>x.disabled=false);}
 };}
-$('contract').value=localStorage.getItem('mythic-contract')||'';
+$('contract').value=localStorage.getItem('fennec-contract')||'';
 bind('connect',async()=>{await window.ethereum.request({method:'eth_requestAccounts'});await session();log('연결 완료');});
-bind('sample',async()=>{
- const svg='<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512"><rect width="512" height="512" fill="#111827"/><path d="M256 50L286 120L271 325H241L226 120Z" fill="#c4b5fd"/><path d="M170 320H342V343H170Z" fill="#fbbf24"/><path d="M246 343H266V430H246Z" fill="#a78bfa"/><circle cx="256" cy="439" r="18" fill="#fbbf24"/></svg>';
- $('uri').value='data:application/json;base64,'+btoa(JSON.stringify({name:'Mythic Sword NFT',description:'Sepolia classroom sword. Not a real-money asset.',image:'data:image/svg+xml;base64,'+btoa(svg),attributes:[{trait_type:'Rarity',value:'Mythic'}]}));
- log('실습용 메타데이터를 채웠습니다.');
+bind('checkImage',async()=>{
+ const uri=publicUri($('imageUri').value);
+ await new Promise((resolve,reject)=>{const image=new Image();image.onload=resolve;image.onerror=()=>reject(Error('공개 이미지 로드 실패'));image.src=gateway(uri);});
+ log('공개 이미지가 브라우저에서 열립니다: '+uri);
 });
+bind('useInlineMetadata',async()=>{
+ const image=publicUri($('imageUri').value);
+ $('uri').value=inlineMetadata(image);
+ const data=await metadata($('uri').value);
+ log('JSON 업로드 없이 메타데이터를 계약에 내장할 준비가 됐습니다.\nimage: '+data.image);
+});
+bind('downloadMetadata',async()=>{
+ const image=publicUri($('imageUri').value);
+ const data={name:'Starlight Fennec Pet NFT',description:'A starlight fennec pet on Sepolia.',image:gateway(image),attributes:[{trait_type:'Pet',value:'Fennec Fox'},{trait_type:'Rarity',value:'Mythic'}]};
+ const blob=new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'}),link=document.createElement('a');
+ link.href=URL.createObjectURL(blob);link.download='fennec-nft-metadata.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+ log('메타데이터 JSON을 다운로드했습니다. 공개 저장소에 업로드한 뒤 URL을 입력하세요.');
+});
+bind('checkMetadata',async()=>{const data=await metadata($('uri').value);log('메타데이터와 이미지 확인 완료\nname: '+data.name+'\nimage: '+data.image);});
 bind('deploy',async()=>{
  await session();const uri=$('uri').value.trim(), n=Number($('supply').value);
- if(!/^(ipfs:\/\/|https:\/\/|data:application\/json;base64,)/.test(uri)||!Number.isSafeInteger(n)||n<1||n>100000)throw Error('메타데이터와 최대 발행 개수를 확인하세요.');
+ if(!uri.startsWith('data:application/json;base64,'))publicUri(uri);
+ if(!Number.isSafeInteger(n)||n<1||n>100000)throw Error('최대 발행 개수를 확인하세요.');
+ const data=await metadata(uri);
+ if(publicUri(data.image)!==gateway(publicUri($('imageUri').value)))throw Error('메타데이터 image가 입력한 페넥여우 PNG 주소와 다릅니다.');
  const factory=new ContractFactory(artifact.abi,artifact.bytecode,signer);
  const c=await factory.deploy(await signer.getAddress(),uri,n);
- $('contract').value=await c.getAddress();localStorage.setItem('mythic-contract',$('contract').value);
+ $('contract').value=await c.getAddress();localStorage.setItem('fennec-contract',$('contract').value);
  await wait(c.deploymentTransaction());log('배포 완료. 계약 주소를 저장하세요:\n'+$('contract').value);
 });
+bind('verifyToken',async()=>{
+ const c=await collection(),id=$('tokenId').value.trim();
+ if(!/^[1-9][0-9]*$/.test(id))throw Error('발급된 tokenId를 입력하세요.');
+ const uri=await c.tokenURI(id),data=await metadata(uri);
+ log('온체인 tokenURI: '+uri+'\nname: '+data.name+'\nimage: '+data.image+'\nMetaMask에서 같은 이미지가 보이는지는 해당 지갑에서 확인하세요.');
+});
 bind('issue',async()=>{
- const c=await collection(true), recipient=address($('recipient').value.trim()), days=Number($('days').value);
+ const c=await collection(true), recipient=address($('recipient').value.trim(),'학생 수령 지갑 주소'), days=Number($('days').value);
  if(!Number.isInteger(days)||days<1||days>365)throw Error('기간은 1~365일입니다.');
  const secret=hexlify(randomBytes(32)), code=['MSW1','11155111',await c.getAddress(),recipient,secret].join('|');
  // Keep the draft even if approval is rejected or the browser closes.

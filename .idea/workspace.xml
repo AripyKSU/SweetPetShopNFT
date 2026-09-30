@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2841c7e2-53f8-4e63-8485-91db18409b2d" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Data/Market/GlobalItemVisuals.asset" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Data/Market/GlobalItemVisuals.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scene/1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scene/1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/MarketPlace/InventoryRowUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/MarketPlace/InventoryRowUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/MarketPlace/MarketRowUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/MarketPlace/MarketRowUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/MarketPlace/PortfolioMarketDemo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/MarketPlace/PortfolioMarketDemo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/SimpleMarket/MythicNftPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/SimpleMarket/MythicNftPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/SimpleMarket/SceneWalletPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Assets/Scripts/SimpleMarket/SceneWalletPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/scripts/build.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/scripts/build.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/scripts/serve.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/scripts/serve.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/tests/contract.test.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/tests/contract.test.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/web/app.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/web/app.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/web/contract.json" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/web/contract.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/NFTWorkshop/web/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketPlaceUGS-main/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/MarketPlaceUGS-main/Packages/packages-lock.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3Jytpgk1s45xVY0JPm0i19i8mb4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="2841c7e2-53f8-4e63-8485-91db18409b2d" name="변경" comment="" />
+      <created>1790645321300</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790645321300</updated>
+      <workItem from="1790645322697" duration="9214000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

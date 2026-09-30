@@ -110,7 +110,7 @@ namespace SimpleMarket
             if (error.Contains("RECEIVER_MUST_BE_EOA")) return "상점 수신 지갑에 스마트 계정/컨트랙트 코드가 있습니다. Cloud Save simple_market/config.receiverAddress를 확인하세요 (README 12.0절).";
             if (error.Contains("REVIEW_REQUIRED")) return "지급 결과를 관리자가 확인해야 합니다. 거래 해시를 보관하고 재결제하지 마세요.";
             if (error.Contains("SETUP_REQUIRED")) return "Cloud Save classroom_market의 Private state와 Cloud Code 배포를 확인하세요.";
-            if (error.Contains("WRONG_PLAYER")) return "결제한 게임 계정과 상품(골드/전설검)에 맞는 확인 버튼을 사용하세요.";
+            if (error.Contains("WRONG_PLAYER")) return "결제한 게임 계정과 상품(골드/특별 펫)에 맞는 확인 버튼을 사용하세요.";
             if (error.Contains("RPC_UNAVAILABLE")) return "블록체인 조회가 지연됩니다. 잠시 후 결제 확인을 누르세요.";
             if (error.Contains("INVALID_")) return "거래 정보 또는 서버 설정이 일치하지 않습니다. 수신 주소·금액·거래 해시를 확인하세요.";
             if (error.Contains("TRANSACTION_FAILED")) return "실패한 블록체인 거래입니다. 골드가 지급되지 않았습니다.";
@@ -143,7 +143,7 @@ namespace SimpleMarket
             if (sepoliaEthText) sepoliaEthText.text = "Sepolia ETH: " + result.balanceEth;
             await Pending(player);
             await Pending(player, true);
-            Message(pending || swordPending ? "이전 결제가 있습니다. 해당 상품의 결제 확인을 누르세요." : "연결 완료. 골드 또는 전설검 구매를 선택하세요.");
+            Message(pending || swordPending ? "이전 결제가 있습니다. 해당 상품의 결제 확인을 누르세요." : "연결 완료. 골드 또는 특별 펫 입양을 선택하세요.");
         });
         public void BuyGold() => BuyProduct(false);
         public void BuyLegendarySword() => BuyProduct(true);
@@ -157,7 +157,7 @@ namespace SimpleMarket
                 (sword ? quote.itemId != "LEGENDARY_SWORD" || quote.quantity != 1 : quote.goldAmount != 10000)) throw new Exception("INVALID_QUOTE");
             string from = connectedAddress;
             if (!connected || string.IsNullOrEmpty(from)) throw new Exception("지갑을 다시 연결하세요.");
-            Message((sword ? "전설검 1개: " : "10,000골드: ") + "MetaMask에서 0.0001 Sepolia ETH + 가스비를 승인하세요.");
+            Message((sword ? "특별 펫 골든 리트리버 1마리: " : "10,000골드: ") + "MetaMask에서 0.0001 Sepolia ETH + 가스비를 승인하세요.");
             try
             {
                 var sent = await Wallet(new() { action = "send", storageKey = OwnerKey(player, sword), from = from, to = quote.to, value = quote.value, data = quote.data });
@@ -204,7 +204,7 @@ namespace SimpleMarket
             if (receipt.status == "PENDING")
             {
                 string reason = string.IsNullOrEmpty(receipt.pendingReason) ? "OLD_SERVER: 해당 Claim 진단 버전을 Publish하세요." : receipt.pendingReason;
-                Message("입금 확인 대기: " + reason + "\n잠시 후 " + (sword ? "무기결제확인" : "골드결제확인") + "을 누르세요. 재결제는 필요 없습니다.");
+                Message("입금 확인 대기: " + reason + "\n잠시 후 " + (sword ? "특별 펫 결제 확인" : "골드 결제 확인") + "을 누르세요. 재결제는 필요 없습니다.");
                 Debug.LogWarning("[" + (sword ? "Sword" : "Gold") + "ClaimDiagnostic] tx=" + hash + " reason=" + reason);
                 return false;
             }
@@ -223,7 +223,7 @@ namespace SimpleMarket
                 if (sword) await marketDemo.RefreshInventoryAsync(); else await marketDemo.RefreshCoinsAsync();
             }
             CheckOwner(player);
-            Message(sword ? "결제 확인 완료. 전설검 1개가 지급되었습니다." : "결제 확인 완료. UGS에 10,000골드가 지급되었습니다.");
+            Message(sword ? "결제 확인 완료. 특별 펫 골든 리트리버가 보관소에 추가되었습니다." : "결제 확인 완료. UGS에 10,000골드가 지급되었습니다.");
             return true;
         }
         public void ForgetPayment() => _ = Run(async player =>
@@ -236,14 +236,14 @@ namespace SimpleMarket
         {
             await Wallet(new() { action = "forget", storageKey = OwnerKey(player, true) });
             CheckOwner(player); swordPending = false;
-            Message("전설검의 로컬 기록만 해제했습니다. 재결제 전 MetaMask 활동을 확인하세요.");
+            Message("특별 펫 결제의 로컬 기록만 해제했습니다. 재결제 전 MetaMask 활동을 확인하세요.");
         });
 #if UNITY_EDITOR
         [ContextMenu("Recovery - Clear unsubmitted SWORD payment")]
         private void RecoverUnsubmittedSwordPayment()
         {
             if (!Application.isPlaying) { Debug.LogWarning("Play 모드에서 로그인 후 실행하세요."); return; }
-            if (UnityEditor.EditorUtility.DisplayDialog("전설검 결제 기록 해제", "MetaMask에 전설검 송금과 대기 요청이 없음을 확인했나요? 전송됐다면 취소하고 전설검 결제 확인을 사용하세요.", "전송 없음 - 해제", "취소")) ForgetSwordPayment();
+            if (UnityEditor.EditorUtility.DisplayDialog("특별 펫 결제 기록 해제", "MetaMask에 특별 펫 결제 송금과 대기 요청이 없음을 확인했나요? 전송됐다면 취소하고 특별 펫 결제 확인을 사용하세요.", "전송 없음 - 해제", "취소")) ForgetSwordPayment();
         }
         [ContextMenu("Recovery - Clear unsubmitted payment")]
         private void RecoverUnsubmittedPayment()

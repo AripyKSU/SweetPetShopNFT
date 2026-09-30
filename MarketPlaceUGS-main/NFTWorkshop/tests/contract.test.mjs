@@ -12,6 +12,7 @@ test('NFT coupon lifecycle, authority, recipient, replay, expiry, cancellation, 
  const admin=await p.getSigner(0), student=await p.getSigner(1), other=await p.getSigner(2);
  const a=await admin.getAddress(),s=await student.getAddress(),o=await other.getAddress();
  const c=await new ContractFactory(artifact.abi,artifact.bytecode,admin).deploy(a,'ipfs://example-metadata',3);await c.waitForDeployment();
+ assert.equal(await c.name(),'Starlight Fennec Pet NFT');assert.equal(await c.symbol(),'FENNEC');
  const now=(await p.getBlock('latest')).timestamp;
  const secret=()=>hexlify(randomBytes(32));const key=secret();const hash=keccak256(key);
  await rejectsTx(c.connect(student).registerCoupon(hash,s,now+1000));

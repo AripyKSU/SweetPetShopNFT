@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class InventoryRowUI : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class InventoryRowUI : MonoBehaviour
         string displayName,
         Sprite icon,
         int price,
-        Func<string, int, Task> createListingFunc)
+        Func<string, int, Task> createListingFunc,
+        Action<string, string, int, PointerEventData> droppedFunc = null)
     {
         // ★ 디버그: 전달받은 값 확인
         Debug.Log($"[InventoryRowUI.Bind] InventoryItemId: {item.InventoryItemId}");
@@ -34,35 +36,26 @@ public class InventoryRowUI : MonoBehaviour
         bool isNft = item.InventoryItemId == "MYTHIC_SWORD_NFT";
         createListingAsync = isNft ? null : createListingFunc;
 
-        if (titleText != null) {
-            titleText.text = !string.IsNullOrEmpty(displayName) ? displayName : item.InventoryItemId;
-        }
+        if (titleText != null) titleText.gameObject.SetActive(false);
 
         if(iconImage != null) {
             iconImage.sprite = icon;
             iconImage.gameObject.SetActive(icon != null);
         }
 
-        if(priceText != null) {
-            priceText.text = isNft ? "NFT 보유 아이템" : $"Coin: {sellPrice.ToString()}";
-        }
-
-        string shortInstance = !string.IsNullOrEmpty(playersInventoryItemId) && playersInventoryItemId.Length > 8
-            ? playersInventoryItemId.Substring(0, 8)
-            : playersInventoryItemId ?? "(null)";
-
-        
-
-        if (instanceText != null) instanceText.text = $"instance: {shortInstance}";
-
-        if (optionText != null) optionText.text = "option: -";
+        if (priceText != null) priceText.gameObject.SetActive(false);
+        if (instanceText != null) instanceText.gameObject.SetActive(false);
+        if (optionText != null) optionText.gameObject.SetActive(false);
 
         if (sellBtn != null)
         {
             sellBtn.onClick.RemoveAllListeners();
-            sellBtn.gameObject.SetActive(!isNft);
-            if (!isNft) sellBtn.onClick.AddListener(() => { _ = SellAsync(); });
+            sellBtn.gameObject.SetActive(false);
         }
+
+        PetDisplayUI display = GetComponent<PetDisplayUI>();
+        if (display != null) display.Bind(item.InventoryItemId, icon, false, false,
+            e => droppedFunc?.Invoke(item.PlayersInventoryItemId, item.InventoryItemId, price, e));
     }
 
     private async Task SellAsync()

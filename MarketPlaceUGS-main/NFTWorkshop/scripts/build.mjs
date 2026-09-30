@@ -3,8 +3,8 @@ import path from 'node:path';
 import solc from 'solc';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const source = fs.readFileSync(path.join(root, 'contracts/MythicSwordNFT.sol'), 'utf8');
-const input = { language:'Solidity', sources:{'MythicSwordNFT.sol':{content:source}},
+const source = fs.readFileSync(path.join(root, 'contracts/FennecPetNFT.sol'), 'utf8');
+const input = { language:'Solidity', sources:{'FennecPetNFT.sol':{content:source}},
   settings:{optimizer:{enabled:true,runs:200},evmVersion:'shanghai',
     outputSelection:{'*':{'*':['abi','evm.bytecode.object']}}}};
 const output = JSON.parse(solc.compile(JSON.stringify(input), {import:name => {
@@ -14,7 +14,7 @@ const output = JSON.parse(solc.compile(JSON.stringify(input), {import:name => {
 }}));
 for(const e of output.errors || []) console.log(e.formattedMessage);
 if((output.errors || []).some(e=>e.severity==='error')) process.exit(1);
-const c=output.contracts['MythicSwordNFT.sol'].MythicSwordNFT;
+const c=output.contracts['FennecPetNFT.sol'].FennecPetNFT;
 fs.writeFileSync(path.join(root,'web/contract.json'),JSON.stringify({abi:c.abi,bytecode:'0x'+c.evm.bytecode.object},null,2));
 fs.copyFileSync(path.join(root,'node_modules/ethers/dist/ethers.min.js'),path.join(root,'web/ethers.min.js'));
 // A single-file Remix source pinned to exactly the dependencies used by local tests.
@@ -30,5 +30,5 @@ function flatten(name,content) {
   });
   return dependencies+'\n// '+name+'\n'+content.replace(/\/\/ SPDX-License-Identifier:[^\n]*/g,'').replace(/pragma solidity[^;]+;/g,'')+'\n';
 }
-fs.writeFileSync(path.join(root,'MythicSwordNFT_REMIX.sol'),'// SPDX-License-Identifier: MIT\npragma solidity 0.8.30;\n'+flatten('MythicSwordNFT.sol',source));
+fs.writeFileSync(path.join(root,'FennecPetNFT_REMIX.sol'),'// SPDX-License-Identifier: MIT\npragma solidity 0.8.30;\n'+flatten('FennecPetNFT.sol',source));
 console.log('Compiled NFT contract, copied browser library, generated single-file Remix source.');

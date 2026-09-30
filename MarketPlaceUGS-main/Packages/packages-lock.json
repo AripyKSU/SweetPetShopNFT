@@ -593,6 +593,15 @@
         "com.unity.render-pipelines.core": "17.3.0"
       }
     },
+    "com.youngwoocho02.unity-cli-connector": {
+      "version": "https://github.com/youngwoocho02/unity-cli.git?path=unity-connector",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      },
+      "hash": "07c62fd29f1e6d29d8f9a504b968bedbbd47ddc8"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

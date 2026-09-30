@@ -46,9 +46,9 @@ namespace SimpleMarket
             {
                 var reply = await CloudCodeService.Instance.CallEndpointAsync<SyncReply>("Nft_SyncInventory", new Dictionary<string, object>());
                 if (!this || Player() != player) return;
-                Message(reply.status == "NOT_LINKED" ? "NFT지갑연결을 눌러 계정과 지갑을 서명으로 연결하세요." :
-                    reply.status == "PARTIAL" ? "일부 동기화 완료. 잠시 후 NFT발행확인을 다시 누르세요." :
-                    $"신화검NFT 인벤토리 동기화 완료: {reply.count}개\n추가 {reply.added}개 / 제거 {reply.removed}개");
+                Message(reply.status == "NOT_LINKED" ? "NFT 지갑 연결을 눌러 계정과 지갑을 서명으로 연결하세요." :
+                    reply.status == "PARTIAL" ? "일부 동기화 완료. 잠시 후 NFT 발급 확인을 다시 누르세요." :
+                    $"희귀 펫 NFT 인벤토리 동기화 완료: {reply.count}개\n추가 {reply.added}개 / 제거 {reply.removed}개");
             }
             catch (Exception e)
             {
@@ -106,7 +106,7 @@ namespace SimpleMarket
                 !Regex.IsMatch(p[2], "^0x[0-9a-fA-F]{40}$") || !Regex.IsMatch(p[3], "^0x[0-9a-fA-F]{40}$") ||
                 !Regex.IsMatch(p[4], "^0x[0-9a-fA-F]{64}$") ||
                 !string.Equals(p[2], wallet.mythicNftContract, StringComparison.OrdinalIgnoreCase))
-                throw new Exception("쿠폰 전체와 Inspector의 Mythic Nft Contract 주소를 확인하세요.");
+                throw new Exception("쿠폰 전체와 Inspector의 NFT 계약 주소를 확인하세요.");
             return p;
         }
         private async Task<string> Rpc(string method, params object[] args)
@@ -132,7 +132,7 @@ namespace SimpleMarket
             for (int i = 0; i < 32; i++) secret[i] = Convert.ToByte(p[4].Substring(2 + i * 2, 2), 16);
             string hash = BitConverter.ToString(Sha3Keccack.Current.CalculateHash(secret)).Replace("-", "").ToLowerInvariant();
             string data = await Rpc("eth_call", new { to = p[2], data = "0x742b20cd" + hash }, "latest");
-            if (!Regex.IsMatch(data, "^0x[0-9a-fA-F]{256}$")) throw new Exception("쿠폰 조회 형식이 다릅니다. 신화검 계약 주소를 확인하세요.");
+            if (!Regex.IsMatch(data, "^0x[0-9a-fA-F]{256}$")) throw new Exception("쿠폰 조회 형식이 다릅니다. NFT 계약 주소를 확인하세요.");
             return ("0x" + data.Substring(26, 40), Number(data.Substring(66, 64)), Number(data.Substring(130, 64)), Number(data.Substring(194, 64)) != 0);
         }
         private async Task<bool> Show(string[] p)
@@ -142,10 +142,10 @@ namespace SimpleMarket
             {
                 var owner = await Rpc("eth_call", new { to = p[2], data = "0x6352211e" + s.token.ToString("x").PadLeft(64, '0') }, "latest");
                 if (!Regex.IsMatch(owner, "^0x[0-9a-fA-F]{64}$")) throw new Exception("소유자 조회 실패");
-                Message("발행 완료! 신화검NFT tokenId: " + s.token + "\n현재 소유자: 0x" + owner.Substring(26));
+                Message("희귀 펫 NFT 입양 완료! tokenId: " + s.token + "\n현재 소유자: 0x" + owner.Substring(26));
                 return true;
             }
-            Message(s.cancelled ? "취소된 쿠폰입니다." : "아직 발행되지 않았습니다. 승인 대기 거래가 있으면 기다린 뒤 다시 확인하세요.");
+            Message(s.cancelled ? "취소된 쿠폰입니다." : "아직 NFT 펫이 발급되지 않았습니다. 승인 대기 거래가 있으면 기다린 뒤 다시 확인하세요.");
             return false;
         }
         public void Check() => _ = Run(async () =>
@@ -163,10 +163,10 @@ namespace SimpleMarket
                 !string.Equals(account.address, s.recipient, StringComparison.OrdinalIgnoreCase))
                 throw new Exception("쿠폰 수령 지갑과 연결한 지갑이 다릅니다. 관리자 등록 여부도 확인하세요.");
             if (s.cancelled || s.deadline < DateTimeOffset.UtcNow.ToUnixTimeSeconds()) throw new Exception("취소되었거나 만료된 쿠폰입니다.");
-            Message("MetaMask에서 NFT 발행 가스비를 승인하세요. 상품 가격은 0 ETH입니다.");
+            Message("MetaMask에서 NFT 펫 입양 가스비를 승인하세요. 펫 가격은 0 ETH입니다.");
             string couponKey = "mythic-coupon:" + Sha3Keccack.Current.CalculateHash(string.Join("|", p));
             var sent = await Wallet(new() { action = "nftRedeem", storageKey = couponKey, from = account.address, to = p[2], value = "0x0", data = "0xeda1122c" + p[4].Substring(2) });
-            Message("전송 완료. NFT 발행 확인을 누르세요.\n거래 해시: " + sent.txHash);
+            Message("전송 완료. NFT 발급 확인을 누르세요.\n거래 해시: " + sent.txHash);
             Debug.Log("[MythicNFT] tx=" + sent.txHash);
         });
         private void OnDestroy()
