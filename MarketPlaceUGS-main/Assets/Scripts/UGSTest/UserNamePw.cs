@@ -19,12 +19,14 @@ public class UserNamePw : MonoBehaviour
 
     private PortfolioMarketDemo marketDemo;
     private bool authenticating;
+    private Button logoutBtn;
 
     private void SetAuthenticating(bool value)
     {
         authenticating = value;
         if (loginBtn != null) loginBtn.interactable = !value;
         if (siginUpBtn != null) siginUpBtn.interactable = !value;
+        if (logoutBtn != null) logoutBtn.interactable = !value;
     }
 
     private void Start()
@@ -34,6 +36,7 @@ public class UserNamePw : MonoBehaviour
         if (loginBtn != null) loginBtn.onClick.AddListener(OnLogin);
         if (siginUpBtn != null) siginUpBtn.onClick.AddListener(OnSignUp);
 
+        CreateLogoutButton();
         SetLoggedOutUI();
     }
 
@@ -41,12 +44,66 @@ public class UserNamePw : MonoBehaviour
     {
         if (loginPanel != null) loginPanel.SetActive(false);
         if (inventoryPanel != null) inventoryPanel.SetActive(true);
+        if (inputPW != null) inputPW.text = string.Empty;
+        if (logoutBtn != null) logoutBtn.gameObject.SetActive(true);
     }
 
     private void SetLoggedOutUI()
     {
         if (loginPanel != null) loginPanel.SetActive(true);
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
+        if (logoutBtn != null) logoutBtn.gameObject.SetActive(false);
+    }
+
+    private void CreateLogoutButton()
+    {
+        if (loginBtn == null || loginPanel == null) return;
+        var welcome = loginPanel.transform.parent.Find("MemberWelcome");
+        Transform parent = welcome != null ? welcome : inventoryPanel != null ? inventoryPanel.transform : null;
+        if (parent == null) return;
+
+        // Reuse the scene's font, sprite and button styling without Inspector wiring.
+        logoutBtn = Instantiate(loginBtn, parent);
+        logoutBtn.name = "LogoutButton";
+        logoutBtn.onClick = new Button.ButtonClickedEvent();
+        logoutBtn.onClick.AddListener(OnLogout);
+        var label = logoutBtn.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (label != null) label.text = "로그아웃";
+        var rect = (RectTransform)logoutBtn.transform;
+        rect.anchorMin = new Vector2(.68f, 0);
+        rect.anchorMax = new Vector2(.94f, 0);
+        rect.pivot = new Vector2(.5f, 0);
+        rect.offsetMin = new Vector2(0, 12);
+        rect.offsetMax = new Vector2(0, 48);
+        var foot = welcome != null ? welcome.Find("WelcomeFoot") as RectTransform : null;
+        if (foot != null) foot.anchorMax = new Vector2(.64f, foot.anchorMax.y);
+    }
+
+    public void OnLogout()
+    {
+        if (authenticating) return;
+        try
+        {
+            if (UnityServices.State == ServicesInitializationState.Initialized)
+                AuthenticationService.Instance.SignOut(true);
+            if (inputID != null) inputID.text = string.Empty;
+            if (inputPW != null) inputPW.text = string.Empty;
+            SetLoggedOutUI();
+            if (marketDemo != null) marketDemo.ResetLoggedOutState();
+            SetMessage("로그아웃했습니다. 다시 로그인해 주세요.");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+            SetMessage("로그아웃 실패 (Console 확인)");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (loginBtn != null) loginBtn.onClick.RemoveListener(OnLogin);
+        if (siginUpBtn != null) siginUpBtn.onClick.RemoveListener(OnSignUp);
+        if (logoutBtn != null) Destroy(logoutBtn.gameObject);
     }
 
     private void SetMessage(string message)

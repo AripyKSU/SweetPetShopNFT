@@ -1,3 +1,5 @@
+> 이 저장소는 [강사님 원본 프로젝트](https://github.com/ikhong0303/UGSMarketwithSepoliaETH)를 기반으로 개인적으로 수정한 프로젝트입니다. 원본 커밋 이력을 유지하며, 개인 UI 수정 내역은 `PETSHOP_UI_UPDATE.md`에서 확인할 수 있습니다.
+
 # UGSMarketwithSepoliaETH
 
 현재 코드는 **Authentication + Cloud Save + Cloud Code**로 동작하는 Economy-free v2입니다. Unity Economy 서비스 활성화, Currency/Inventory Item 생성, Economy Configuration Publish는 필요 없습니다.

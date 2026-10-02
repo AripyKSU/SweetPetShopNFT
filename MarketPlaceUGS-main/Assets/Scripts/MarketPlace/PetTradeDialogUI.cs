@@ -37,6 +37,7 @@ public sealed class PetTradeDialogUI : MonoBehaviour
         layout.spacing = 18f;
         layout.childAlignment = TextAnchor.MiddleCenter;
         layout.childControlWidth = true;
+        layout.childControlHeight = true;
         layout.childForceExpandHeight = false;
         panel.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
@@ -50,6 +51,7 @@ public sealed class PetTradeDialogUI : MonoBehaviour
         HorizontalLayoutGroup buttonsLayout = buttons.GetComponent<HorizontalLayoutGroup>();
         buttonsLayout.spacing = 18;
         buttonsLayout.childControlWidth = true;
+        buttonsLayout.childControlHeight = true;
         buttonsLayout.childForceExpandWidth = true;
         dialog.confirmButton = CreateButton("확인", buttons.transform, new Color32(101, 139, 91, 255));
         Button cancel = CreateButton("취소", buttons.transform, new Color32(135, 116, 96, 255));

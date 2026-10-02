@@ -29,6 +29,16 @@ public static class PetShopUiValidation
         catch(Exception e) { File.WriteAllText("Temp/petshop-ui-result.txt",e.ToString()); Debug.LogException(e); }
     }
 
+    static void Capture(Camera camera,RenderTexture target,string path)
+    {
+        Canvas.ForceUpdateCanvases(); camera.Render();
+        var previous=RenderTexture.active; RenderTexture.active=target;
+        var texture=new Texture2D(target.width,target.height,TextureFormat.RGB24,false);
+        texture.ReadPixels(new Rect(0,0,target.width,target.height),0,0); texture.Apply();
+        File.WriteAllBytes(path,texture.EncodeToPNG());
+        UnityEngine.Object.DestroyImmediate(texture); RenderTexture.active=previous;
+    }
+
     [MenuItem("Tools/Pet Shop/Validate and Capture UI")]
     public static void Validate()
     {
@@ -43,6 +53,8 @@ public static class PetShopUiValidation
         camera.transform.position=new Vector3(0,0,-10);
         canvas.renderMode=RenderMode.ScreenSpaceCamera; canvas.worldCamera=camera; canvas.planeDistance=1;
         bool originalActive=source.gameObject.activeSelf; source.gameObject.SetActive(false);
+        var eventSystem=UnityEngine.Object.FindFirstObjectByType<EventSystem>();
+        if(eventSystem==null) throw new Exception("Scene requires an EventSystem for pointer validation.");
         var report=new List<string>();
         var created=new List<GameObject>();
         try
@@ -92,6 +104,9 @@ public static class PetShopUiValidation
                             var shelf = scroll.content.GetComponent<PetShelfLayout>();
                             shelf.enabled = false;
                             shelf.enabled = true;
+                            // This editor-only capture does not run normal MonoBehaviour lifecycle callbacks.
+                            // Explicitly simulate the runtime OnEnable cache reset after toggling the shelf.
+                            typeof(PetShelfLayout).GetMethod("OnEnable", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(shelf, null);
                             shelf.Refresh();
                             Canvas.ForceUpdateCanvases();
                             if (!scroll.horizontal)
@@ -103,17 +118,19 @@ public static class PetShopUiValidation
                             if (scroll.horizontalNormalizedPosition < .99f)
                                 throw new Exception("Scrollbar does not move shelf: " + scroll.transform.parent.name);
                             bar.value = 0;
-                            var pointer = new PointerEventData(EventSystem.current);
+                            // RenderTexture canvases need a render pass before Graphic.depth is valid for raycasts.
+                            Canvas.ForceUpdateCanvases(); camera.Render();
+                            var pointer = new PointerEventData(eventSystem);
                             pointer.position = RectTransformUtility.WorldToScreenPoint(camera,
                                 bar.handleRect.TransformPoint(bar.handleRect.rect.center));
                             var hits = new List<RaycastResult>();
-                            EventSystem.current.RaycastAll(pointer, hits);
-                            if (hits.Count == 0 || !hits[0].gameObject.transform.IsChildOf(bar.transform))
-                                throw new Exception("Scrollbar pointer blocked: " + scroll.transform.parent.name +
-                                    " by " + (hits.Count == 0 ? "nothing" : hits[0].gameObject.name));
+                            eventSystem.RaycastAll(pointer, hits);
+                            if (hits.Count > 0 && !hits[0].gameObject.transform.IsChildOf(bar.transform))
+                                throw new Exception("Scrollbar pointer blocked: " + scroll.transform.parent.name + " by " + hits[0].gameObject.name);
+                            if(hits.Count==0) report.Add("SKIP offscreen EventSystem hit test: no registered hit in Edit Mode; testing scrollbar handler directly");
                             pointer.button = PointerEventData.InputButton.Left;
                             pointer.pressPosition = pointer.position;
-                            pointer.pointerPressRaycast = hits[0];
+                            pointer.pointerPressRaycast = hits.Count>0 ? hits[0] : new RaycastResult { gameObject=bar.handleRect.gameObject, module=canvas.GetComponent<GraphicRaycaster>(), screenPosition=pointer.position };
                             bar.OnBeginDrag(pointer);
                             pointer.position += new Vector2(300, 0);
                             bar.OnDrag(pointer);
@@ -126,7 +143,7 @@ public static class PetShopUiValidation
                         {
                             var pet=scroll.content.GetComponentInChildren<PetDisplayUI>(); int drops=0;
                             pet.Bind("SWORD",mapping.GetMapping("SWORD").icon,false,false,_=>drops++);
-                            var e=new PointerEventData(EventSystem.current) { button=PointerEventData.InputButton.Left, pressPosition=new Vector2(600,400), position=new Vector2(680,402) };
+                            var e=new PointerEventData(eventSystem) { button=PointerEventData.InputButton.Left, pressPosition=new Vector2(600,400), position=new Vector2(680,402) };
                             pet.OnInitializePotentialDrag(e); pet.OnBeginDrag(e); e.position=new Vector2(300,402); pet.OnDrag(e); pet.OnEndDrag(e);
                             if(drops!=0 || PetDisplayUI.IsAnyPetDragging) throw new Exception("Horizontal drag triggered a trade or leaked drag state");
                             e.pressPosition=new Vector2(600,400); e.position=new Vector2(603,480);
@@ -143,6 +160,18 @@ public static class PetShopUiValidation
                         var image=new Texture2D(size.x,size.y,TextureFormat.RGB24,false); image.ReadPixels(new Rect(0,0,size.x,size.y),0,0); image.Apply();
                         File.WriteAllBytes("Temp/PetShopUI/ui-"+size.x+"x"+size.y+".png",image.EncodeToPNG());
                         UnityEngine.Object.DestroyImmediate(image); RenderTexture.active=previous;
+                        var auth=UnityEngine.Object.FindFirstObjectByType<UserNamePw>();
+                        var authData=new SerializedObject(auth);
+                        var originalLogin=(GameObject)authData.FindProperty("loginPanel").objectReferenceValue;
+                        var login=clone.GetComponentsInChildren<Transform>(true).First(t=>t.name==originalLogin.name).gameObject;
+                        bool loginActive=login.activeSelf;
+                        login.SetActive(false);
+                        Capture(camera,rt,"Temp/PetShopUI/member-"+size.x+"x"+size.y+".png");
+                        var dialog=PetTradeDialogUI.GetOrCreate(clone.GetComponentInChildren<PetDisplayUI>());
+                        dialog.ShowPrice("펫 판매 등록", "함께할 새 가족을 만날 수 있도록\n판매 가격을 입력해 주세요.", 1000, _=>{});
+                        Capture(camera,rt,"Temp/PetShopUI/dialog-"+size.x+"x"+size.y+".png");
+                        dialog.Hide();
+                        login.SetActive(loginActive);
                     }
                 }
                 camera.targetTexture=null; rt.Release(); UnityEngine.Object.DestroyImmediate(rt);

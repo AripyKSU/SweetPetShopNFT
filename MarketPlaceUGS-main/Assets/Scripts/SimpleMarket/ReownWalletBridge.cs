@@ -58,7 +58,7 @@ namespace SimpleMarket
             await Initialize();
             if (request.action == "connect")
             {
-                if (!AppKit.IsAccountConnected && !await AppKit.ConnectorController.TryResumeSessionAsync())
+                if (!AppKit.IsAccountConnected && !await TryResumeWalletSession())
                 {
                     AppKit.OpenModal();
                     var deadline = DateTime.UtcNow.AddMinutes(3);
@@ -166,6 +166,20 @@ namespace SimpleMarket
 #endif
         }
 #if SIMPLE_MARKET_REOWN && !UNITY_WEBGL
+        private async Task<bool> TryResumeWalletSession()
+        {
+            try { return await AppKit.ConnectorController.TryResumeSessionAsync(); }
+            catch (NullReferenceException)
+            {
+                // Reown LoadDefaultsAsync dereferences Session after a remote disconnect.
+                // Remove only its default-session record; payment receipts stay intact.
+                var client = AppKit.Instance.SignClient;
+                await client.CoreClient.Storage.RemoveItem(client.AddressProvider.Context + "-default-session");
+                await client.AddressProvider.LoadDefaultsAsync();
+                Debug.LogWarning("[ReownWalletBridge] 끊어진 지갑 세션을 정리했습니다. QR로 다시 연결하세요.");
+                return false;
+            }
+        }
         private static Chain Sepolia() => new("eip155", "11155111", "Ethereum Sepolia",
             new Currency("Sepolia Ether", "ETH", 18), new BlockExplorer("Etherscan", "https://sepolia.etherscan.io"),
             "https://ethereum-sepolia-rpc.publicnode.com", true, ChainConstants.Chains.Ethereum.ImageUrl);

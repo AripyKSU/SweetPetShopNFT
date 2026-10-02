@@ -85,9 +85,7 @@ public class PortfolioMarketDemo : MonoBehaviour
                 refreshTask = RefreshDataAsync();
             else if (!isSignedIn)
             {
-                ClearChildren(inventoryContent);
-                ClearChildren(marketContent);
-                CreateDragPreviews();
+                ResetLoggedOutState();
             }
         }
 
@@ -97,6 +95,19 @@ public class PortfolioMarketDemo : MonoBehaviour
 
         refreshAfterDrag = false;
         refreshTask = RefreshDataAsync();
+    }
+
+    public void ResetLoggedOutState()
+    {
+        wasSignedIn = false;
+        inventoryRefreshVersion++;
+        marketRefreshVersion++;
+        refreshAfterDrag = false;
+        if (tradeDialog != null) tradeDialog.Hide();
+        if (coinText != null) coinText.text = "0";
+        ClearChildren(inventoryContent);
+        ClearChildren(marketContent);
+        CreateDragPreviews();
     }
 
     private void OnMarketChanged()
@@ -158,7 +169,13 @@ public class PortfolioMarketDemo : MonoBehaviour
     // -------------------------
     public async Task RefreshCoinsAsync()
     {
-        try { var p = await MarketCloudClient.GetPlayer(); if (coinText != null) coinText.text = p.balance.ToString(); }
+        try
+        {
+            string playerId = AuthenticationService.Instance.PlayerId;
+            var p = await MarketCloudClient.GetPlayer();
+            if (!AuthenticationService.Instance.IsSignedIn || AuthenticationService.Instance.PlayerId != playerId) return;
+            if (coinText != null) coinText.text = p.balance.ToString();
+        }
         catch (Exception e) { Debug.LogWarning(e); SetMessage("코인 잔액을 불러오지 못했어요. Cloud Save / Cloud Code 설정을 확인해 주세요."); }
     }
     private async Task AddCoinAsync(long amount)

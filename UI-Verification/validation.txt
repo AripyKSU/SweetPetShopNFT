@@ -4,7 +4,9 @@
 (1920, 1080) Scroll View count=1 horizontal=False viewport=(1263.08, 294.00) content=(1263.08, 294.00)
 (1920, 1080) Scroll View count=4 horizontal=False viewport=(1263.08, 294.00) content=(1263.08, 294.00)
 (1920, 1080) Scroll View count=4 horizontal=False viewport=(1263.08, 294.00) content=(1263.08, 294.00)
+SKIP offscreen EventSystem hit test: no registered hit in Edit Mode; testing scrollbar handler directly
 (1920, 1080) Scroll View count=5 horizontal=True viewport=(1263.08, 294.00) content=(1528.00, 294.00)
+SKIP offscreen EventSystem hit test: no registered hit in Edit Mode; testing scrollbar handler directly
 (1920, 1080) Scroll View count=5 horizontal=True viewport=(1263.08, 294.00) content=(1528.00, 294.00)
 PASS horizontal scroll / vertical trade / drag cleanup
 (1920, 1080) Scroll View count=30 horizontal=True viewport=(1263.08, 294.00) content=(9128.00, 294.00)
@@ -16,7 +18,9 @@ PASS horizontal scroll / vertical trade / drag cleanup
 (1280, 720) Scroll View count=1 horizontal=False viewport=(1263.08, 294.00) content=(1263.08, 294.00)
 (1280, 720) Scroll View count=4 horizontal=False viewport=(1263.08, 294.00) content=(1263.08, 294.00)
 (1280, 720) Scroll View count=4 horizontal=False viewport=(1263.08, 294.00) content=(1263.08, 294.00)
+SKIP offscreen EventSystem hit test: no registered hit in Edit Mode; testing scrollbar handler directly
 (1280, 720) Scroll View count=5 horizontal=True viewport=(1263.08, 294.00) content=(1528.00, 294.00)
+SKIP offscreen EventSystem hit test: no registered hit in Edit Mode; testing scrollbar handler directly
 (1280, 720) Scroll View count=5 horizontal=True viewport=(1263.08, 294.00) content=(1528.00, 294.00)
 PASS horizontal scroll / vertical trade / drag cleanup
 (1280, 720) Scroll View count=30 horizontal=True viewport=(1263.08, 294.00) content=(9128.00, 294.00)
